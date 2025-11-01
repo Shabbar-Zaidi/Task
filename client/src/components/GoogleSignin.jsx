@@ -2,6 +2,7 @@ import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import React from "react";
 import { useAppContext } from "../context/AppContext.jsx";
+import { googleAuth } from "../api/api.js";
 
 function GoogleSignin() {
   const { setUser } = useAppContext();
@@ -14,18 +15,17 @@ function GoogleSignin() {
             Authorization: `Bearer ${tokenResponse.access_token}`,
           },
         });
+        console.log(userInfo.data);
 
         // Send user info to your backend
-        const res = await axios.post("http://localhost:8080/api/auth/google", {
-          user: userInfo.data,
-        });
+        const res = await googleAuth({ user: userInfo.data });
 
         console.log(res.data);
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("user", JSON.stringify(res.data.user));
         setUser(res.data.user);
         // navigate('/profile')
-        window.location.href = "/create-profile";
+        window.location.href = "/profile";
       } catch (err) {
         console.error(err);
       }

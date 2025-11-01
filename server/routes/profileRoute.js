@@ -5,7 +5,7 @@ import { verifyToken } from "../middlewares/authMiddleware.js";
 const profileRouter = express.Router();
 
 profileRouter.get("/get", verifyToken, getProfile);
-profileRouter.post("/createProfile", verifyToken, createProfile);
+profileRouter.post("/create", verifyToken, createProfile);
 profileRouter.put("/update", verifyToken, updateProfile);
 profileRouter.delete("/delete", verifyToken, deleteProfile);
 

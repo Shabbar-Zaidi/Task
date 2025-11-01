@@ -23,18 +23,18 @@ const CreateProfile = () => {
   const handleSubmit = async () => {
     try {
       if (!formData.firstName || !formData.lastName) {
-        alert("Please fill required fields");
+        toast.error("Please fill required fields");
         return;
       }
       if (formData.password && formData.password !== formData.confirmPassword) {
-        alert("Passwords do not match");
+        toast.error("Passwords do not match");
         return;
       }
 
       const token = localStorage.getItem("token");
       console.log("CreateProfile: token present?", !!token);
       if (!token) {
-        alert("Please log in to update profile");
+        toast.error("Please log in to update profile");
         navigate("/login");
         return;
       }

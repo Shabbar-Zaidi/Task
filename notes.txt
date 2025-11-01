@@ -1,1 +1,6 @@
 profile, update, delete,
+
+
+user -> signup -> main 
+user -> login ->  main
+user -> forgotpassword ->  

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets.js";
 import axios from "axios";
 import { useAppContext } from "../context/AppContext.jsx";
+import { getProfile } from "../api/api.js";
 
 const Profile = () => {
   const { profileData, setProfileData } = useAppContext();
@@ -11,14 +12,8 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          console.warn("No token present - cannot fetch profile");
-          return;
-        }
-        const res = await axios.get("http://localhost:8080/api/profile/get", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await getProfile();
+
         console.log("Protected data:", res.data.user);
         setProfileData(res.data.user);
       } catch (err) {
@@ -61,7 +56,7 @@ const Profile = () => {
 
   const editProfile = () => {
     alert("Edit profile functionality to be implemented.");
-    navigate("/create-profile");
+    navigate("/profile");
   };
 
   return (
@@ -73,12 +68,11 @@ const Profile = () => {
       ) : (
         <div className="bg-[rgb(19,22,25)] text-white h-screen">
           <div className="flex flex-col justify-center items-center h-full gap-4">
-            <img className="w-50 h-50 rounded-full" src={profileData.picture} alt="" />
+            <img className="w-50 h-50 rounded-full" src={profileData.picture ? profileData.picture : assets.profile_sidebar} alt="" />
             <h2>Welcome, {profileData.name}</h2>
             <p>Email: {profileData.email}</p>
-            <p>About: {profileData.about}</p>
-            <p>First Name: {profileData.firstName}</p>
-            <p>Last Name: {profileData.lastName}</p>
+            <p>First Name: {profileData.name.split(" ")[0]}</p>
+            <p>Last Name: {profileData.name.split(" ")[1]}</p>
             <p>Auth Provider: {profileData.authProvider}</p>
             <div>
               <button onClick={deleteProfile} className="bg-red-600 px-2 py-3 mx-2 rounded-lg cursor-pointer">
