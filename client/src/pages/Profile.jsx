@@ -37,7 +37,7 @@ const Profile = () => {
         console.warn("No token present - cannot delete profile");
         return;
       }
-      const res = await axios.delete("http://localhost:8080/api/profile/delete", {
+      const res = await axios.delete("http://localhost:8080/profile/delete", {
         headers: { Authorization: `Bearer ${token}` },
       });
 

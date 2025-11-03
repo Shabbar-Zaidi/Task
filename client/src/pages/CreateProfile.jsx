@@ -50,12 +50,12 @@ const CreateProfile = () => {
       let res;
       if (isEditing) {
         // axios.put(url, data, config)
-        res = await axios.put("http://localhost:8080/api/profile/update", payload, {
+        res = await axios.put("http://localhost:8080/profile/update", payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
       } else {
         // axios.post(url, data, config)
-        res = await axios.post("http://localhost:8080/api/profile/createProfile", payload, {
+        res = await axios.post("http://localhost:8080/profile/createProfile", payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
       }

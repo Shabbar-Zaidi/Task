@@ -1,9 +1,9 @@
 import express from "express";
 import passport from "passport";
-import { continuewithlogin, loginUser, signupUser, verifyEmail, forgotPassword, resetPassword, checkAuth, resendVerification } from "../controllers/authController.js";
+import { continuewithlogin, continuewithfb, loginUser, signupUser, verifyEmail, forgotPassword, resetPassword, checkAuth, resendVerification } from "../controllers/authController.js";
 import { verifyToken } from "../middlewares/authMiddleware.js";
 
-const authRouter = express.Router();
+const  authRouter = express.Router();
 
 // auth routes
 authRouter.post("/google", continuewithlogin);
@@ -14,13 +14,15 @@ authRouter.post("/resend-verification", resendVerification);
 authRouter.post("/forgot-password", forgotPassword);
 authRouter.post("/reset-password", resetPassword);
 authRouter.get("/check-auth", verifyToken, checkAuth);
-// authRouter.post("/auth/facebook", continuewithfacebook);
-// authRouter.get("/auth/facebook", passport.authenticate("facebook", { scope: ["email"] }));
-// authRouter.get("/auth/facebook/callback",
-//   passport.authenticate("facebook", {
-//     successRedirect: "http://localhost:5173/",
-//     failureRedirect: "http://localhost:5173/register",
-//   })
-// )
+authRouter.get("/facebook", passport.authenticate("facebook", { scope: ["email"] }));
+
+// Callback after Facebook login
+authRouter.get(
+  "/facebook/callback",
+  passport.authenticate("facebook", {
+    failureRedirect: "http://localhost:5173/register",
+  }),
+  continuewithfb
+);
 
 export default authRouter;

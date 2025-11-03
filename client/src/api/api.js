@@ -22,7 +22,7 @@ export const verifyEmail = (verificationCode) => api.post("/auth/verify-email", 
 export const forgotPassword = (email) => api.post("/auth/forgot-password", { email });
 export const resetPassword = (token, password) => api.post("/auth/reset-password", { token, password });
 export const googleAuth = (userData) => api.post("/auth/google", userData);
-export const facebookAuth = () => api.get("/auth/facebook");
+export const facebookAuth = (token) => api.get("/auth/facebook", { headers: { Authorization: `Bearer ${token}` } });
 
 // Profile APIs
 export const getProfile = (userId) => api.get(`/profile/get`, headersWithAuth());

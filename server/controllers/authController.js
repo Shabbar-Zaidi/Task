@@ -3,6 +3,7 @@ import { generateToken } from "../utils/generateToken.js";
 import bcrypt from "bcrypt";
 import User from "../models/userModel.js";
 import crypto from "crypto";
+import jwt from "jsonwebtoken";
 
 import { sendPasswordResetEmail, sendResetSuccessEmail, sendVerificationEmail, sendWelcomeEmail } from "../nodemailer/emails.js";
 
@@ -34,11 +35,11 @@ export const continuewithlogin = async (req, res) => {
     res.status(201).json({ success: true, token, user: { name: existingUser.name, email: existingUser.email, id: existingUser._id } });
   } catch (err) {
     console.error("continuewithlogin error:", err && err.stack ? err.stack : err);
-    res.status(401).json({ error: "Invalid Google token", details: err?.message });
+    res.status(401).json({ error: "Invalid Google token", details: err && err.message });
   }
 };
 
-// http://localhost:8080/api/auth/signup
+// http://localhost:8080/auth/signup
 export const signupUser = async (req, res) => {
   const { email, password, name } = req.body;
 
@@ -87,7 +88,7 @@ export const signupUser = async (req, res) => {
   }
 };
 
-// http://localhost:8080/api/auth/verify-email
+// http://localhost:8080/auth/verify-email
 export const verifyEmail = async (req, res) => {
   const { verificationCode } = req.body;
   console.log("verificationCode", verificationCode);
@@ -123,7 +124,7 @@ export const verifyEmail = async (req, res) => {
   }
 };
 
-// http://localhost:8080/api/auth/resend-verification
+// http://localhost:8080/auth/resend-verification
 export const resendVerification = async (req, res) => {
   const { email } = req.body;
   try {
@@ -149,7 +150,7 @@ export const resendVerification = async (req, res) => {
   }
 };
 
-// http://localhost:8080/api/auth/login
+// http://localhost:8080/auth/login
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -187,7 +188,7 @@ export const loginUser = async (req, res) => {
 //   res.status(200).json({ success: true, message: "Logged out successfully" });
 // };
 
-// http://localhost:8080/api/auth/forgot-password
+// http://localhost:8080/auth/forgot-password
 
 export const forgotPassword = async (req, res) => {
   const { email } = req.body;
@@ -217,7 +218,7 @@ export const forgotPassword = async (req, res) => {
   }
 };
 
-// http://localhost:8080/api/auth/reset-password/:token
+// http://localhost:8080/auth/reset-password/:token
 export const resetPassword = async (req, res) => {
   try {
     // Support token being passed either as URL param (/reset-password/:token)
@@ -228,6 +229,9 @@ export const resetPassword = async (req, res) => {
     if (!token) {
       return res.status(400).json({ success: false, message: "Reset token is required" });
     }
+
+    // Data must be send and recieve via encryption model
+    
 
     const user = await User.findOne({
       resetPasswordCode: token,
@@ -269,32 +273,15 @@ export const checkAuth = async (req, res) => {
   }
 };
 
-
-// export const continuewithfacebook = async (req, res) => {
-//   try {
-//     console.log("continuewithfacebook: incoming body:", req.body);
-//     const { user } = req.body;
-//     if (!user) {
-//       console.warn("continuewithfacebook: missing user in request body");
-//       return res.status(400).json({ message: "User data missing" });
-//     }
-//     let existingUser = await User.findOne({ facebookId: user.id });
-//     if (!existingUser) {
-//       existingUser = new User({
-//         name: user.name,
-//         email: user.email,
-//         facebookId: user.id,
-//         picture: user.picture.data.url,
-//         authProvider: "facebook",
-//       });
-//       await existingUser.save();
-//     }
-//     const token = generateToken(existingUser._id);
-//     // Send response with consistent shape
-//     res.status(201).json({ success: true, token, user: { name: existingUser.name, email: existingUser.email, id: existingUser._id } });
-//   }
-//   catch (err) {
-//     console.error("continuewithfacebook error:", err && err.stack ? err.stack : err);
-//     res.status(401).json({ error: "Invalid Facebook token", details: err?.message });
-//   }
-// };
+export const continuewithfb = async (req, res) => {
+  try {
+    // Create JWT token
+    const token = generateToken(req.user._id);
+    // send response with token
+    // res.status(200).json({ success: true, token, user: { name: req.user.name, email: req.user.email, id: req.user._id } })
+    res.redirect(`${process.env.CLIENT_URL}/?token=${token}`);
+  } catch (err) {
+    console.error("continuewithfacebook error:", err && err.stack ? err.stack : err);
+    res.status(401).json({ error: "Invalid Facebook token", message: err && err.message });
+  }
+};

@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
   verificationCodeExpiresAt: { type: Date },
   resetPasswordCode: { type: String },
   resetPasswordExpiresAt: { type: Date },
-  authProvider: { type: String, default: "email", enum: ["google", "apple", "email"] },
+  authProvider: { type: String, default: "email", enum: ["google", "facebook", "email"] },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });

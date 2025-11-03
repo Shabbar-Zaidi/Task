@@ -26,7 +26,7 @@ const Register = () => {
         setUser(res.data.user);
         setIsAuthenticated(true);
         localStorage.setItem("user", JSON.stringify(res.data.user));
-        // navigate("/verify-email");
+        navigate("/verify-email");
       } else {
         toast.error(res.data.message || "Login/Signup failed");
         // alert("Signup failed. Please try again.");
